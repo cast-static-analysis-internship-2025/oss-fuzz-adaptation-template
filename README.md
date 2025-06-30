@@ -1,7 +1,6 @@
 # OSS-Fuzz Project Adaptation Task
 
-This task is inspired by a real challenge we faced in our work.
-We're experimenting with how different [GCC optimization flags](https://gcc.gnu.org/onlinedocs/gcc-3.3.4/gcc/Optimize-Options.html) affect the runtime performance of C/C++ programs.
+We're experimenting with how different [GCC optimization flags](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html) affect the runtime performance of C/C++ programs.
 To do this effectively, we need a collection of diverse real-world C/C++ projects that can be automatically built and executed on fixed input data.
 This allows us to compile the projects using different optimization flags and measure their runtime under each flag sequence.
 For those experiments to work, it's important that each project has stable runtime and that its execution covers a significant portion of the code.
@@ -30,7 +29,7 @@ Be sure to review the topics below before starting the assignment:
 * Build systems such as Make and CMake
 * Fuzzing, particularly AFL++
 * Python programming language
-* Docker
+* Docker and containerization
 
 ## 0. Working Environment
 We primarily work in a Linux environment, specifically Ubuntu.
@@ -128,9 +127,9 @@ we can generate an input corpus with large coverage for the target project.
 Adapting OSS-Fuzz projects requires certain modifications.
 The first step is to copy the project's contents into your fork of this repository.
 ```shell
-cp -r /oss-fuzz/projects/<PROJECT> /OSS-Fuzz-Project-Adaptation/
+cp -r /oss-fuzz/projects/<PROJECT> /oss-fuzz-adaptation
 ```
-And make all the modifications in `/OSS-Fuzz-Project-Adaptation/<PROJECT>` directory.
+And make all the modifications in `/oss-fuzz-adaptation/<PROJECT>` directory.
 Replace `<PROJECT>` with the name of the project you have been given.
 
 The main goal is to establish a custom build environment for the OSS-Fuzz project.
@@ -173,10 +172,10 @@ Therefore, adding carefully chosen diverse RAR files to the corpus
 can be beneficial for improving project coverage.
 
 #### 2.1.3 Corpus Location
-After collecting a valid corpus in `OSS-Fuzz-Project-Adaptation/<PROJECT>/corpus` directory,
-it should be archived and saved in the project directory as `OSS-Fuzz-Project-Adaptation/<PROJECT>/corpus.tar.gz`:
+After collecting a valid corpus in `oss-fuzz-adaptation/<PROJECT>/corpus` directory,
+it should be archived and saved in the project directory as `oss-fuzz-adaptation/<PROJECT>/corpus.tar.gz`:
 ```shell
-tar -czf /OSS-Fuzz-Project-Adaptation/<PROJECT>/corpus.tar.gz -C /OSS-Fuzz-Project-Adaptation/<PROJECT>/ corpus
+tar -czf /oss-fuzz-adaptation/<PROJECT>/corpus.tar.gz -C /oss-fuzz-adaptation/<PROJECT>/ corpus
 ```
 
 ### 2.2. Fuzzing Elimination
