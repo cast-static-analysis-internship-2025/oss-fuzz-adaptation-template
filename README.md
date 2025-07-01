@@ -26,7 +26,7 @@ Be sure to review the topics below before starting the assignment:
 * Bash scripting
 * Git and GitHub for version control
 * The compilation process using GCC
-* Build systems such as Make and CMake
+* Build systems such as Make, CMake, Meson and Ninja
 * Fuzzing, particularly AFL++
 * Python programming language
 * Docker and containerization
@@ -100,7 +100,7 @@ Running an AFL++ fuzzer will automatically generate an input corpus in the outpu
 The corpus is a directory containing multiple files, each serving as an input sample for the project.
 
 ### 1.6. AFL++ Flags
-When running an AFL++ fuzzer you can additionally provide arguments to AFL++:
+When running an AFL++ fuzzer, you can additionally provide arguments to AFL++:
 ```shell
 python3 infra/helper.py run_fuzzer --engine afl <PROJECT> <FUZZER_NAME> -- <AFL_FLAGS>
 ```
@@ -129,8 +129,8 @@ The first step is to copy the project's contents into your fork of this reposito
 ```shell
 cp -r /oss-fuzz/projects/<PROJECT> /oss-fuzz-adaptation
 ```
-And make all the modifications in `/oss-fuzz-adaptation/<PROJECT>` directory.
 Replace `<PROJECT>` with the name of the project you have been given.
+From this point forward, all your modifications should be made exclusively within the directory `oss-fuzz-adaptation/<PROJECT>`.
 
 The main goal is to establish a custom build environment for the OSS-Fuzz project.
 The process involves two key phases:
@@ -244,6 +244,8 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 ```
+
+***NOTE:*** In case the project has several fuzzer source files, you only need to adapt one.
 
 #### 2.2.3. Build Script Modifications
 The project's `build.sh` script typically compiles the project
@@ -360,7 +362,7 @@ The project's directory contains four key components:
 After making all necessary changes to the project, you can test it using the following steps.
 
 ### 4.1. Manual Testing
-If you want to manually configure your build and run settings, here are the steps to follow.
+If you want to manually test your build and run settings, here are the steps to follow.
 
 #### 4.1.1. Build Docker Image
 Replace `<PROJECT>` with your project name:
