@@ -10,14 +10,13 @@ These projects are originally designed for fuzz testing,
 but we adapt them so they can be compiled without any fuzzing-related options and instead with any compiler flags we want to test.
 
 Your task is to modify a given OSS-Fuzz project so that it fits these needs.
-A more detailed description of the task is provided in the sections below:
+A more detailed description of the task is provided in the sections below.
 
-* Chapter 1: Overview of OSS-Fuzz and its main components
-* Chapter 2: Project adaptation steps
-* Chapter 3: Example project
-* Chapter 4: Testing your solution
-* Chapter 5: Conclusion
+This task might push you outside your comfort zone.
+You're not expected to know everything upfront.
+The goal is to learn by exploring and trying things out.
 
+## 0. Before You Start
 Successfully adapting the projects requires knowledge in several areas.
 Be sure to review the topics below before starting the assignment:
 
@@ -31,12 +30,17 @@ Be sure to review the topics below before starting the assignment:
 * Python programming language
 * Docker and containerization
 
-## 0. Working Environment
-We primarily work in a Linux environment, specifically Ubuntu.
-All command examples in this assignment are written for the Linux terminal,
+Since our work is primarily done in a Linux environment (specifically Ubuntu),
+all command examples in this assignment are written for the Linux terminal,
 so it's recommended that you use or have access to a Linux system.
 
-## 1. OSS-Fuzz Usage
+If at any point it’s unclear what the final result should look like or how a specific part should be adapted,
+you can refer to the example project for guidance.
+An example of a fully adapted project is available in the [example/mupdf directory](example/mupdf).
+It shows how the **mupdf** project should look after the adaptation process.
+The directory contains everything necessary to build and run the project in a container using a fixed input corpus.
+
+## 1. Overview of OSS-Fuzz
 OSS-Fuzz is an open-source fuzzing service developed by Google
 to improve the security and reliability of open-source software.
 It automatically tests projects for bugs and vulnerabilities using fuzzing.
@@ -80,7 +84,7 @@ Next, build the AFL++ fuzzer for a specific project using:
 ```shell
 python3 infra/helper.py build_fuzzers --engine afl <PROJECT>
 ```
-Here, `<PROJECT>` refers to any project within the `oss-fuzz/projects/` directory that supports AFL++ fuzzing engine.
+Here, `<PROJECT>` refers to any project name within the `oss-fuzz/projects/` directory that supports AFL++ fuzzing engine.
 After executing this command, built fuzzers will be available in the `oss-fuzz/build/out/<PROJECT>` directory.
 A fuzzer is an executable (usually has a filename ending in `_fuzzer`) that automatically feeds random inputs
 into the program to uncover bugs, crashes, or security vulnerabilities.
@@ -115,7 +119,7 @@ Here is an example of the run command with AFL++ flags:
 python3 infra/helper.py run_fuzzer --engine afl fftw3 fftw3_fuzzer -- -V 10 -g 1000
 ```
 
-## 2. Adapting Project
+## 2. Project Adaptation Steps
 Fuzzers cannot be directly used for our goal,
 as they run on randomly generated input data, resulting in unstable runtimes.
 However, OSS-Fuzz projects still provide an excellent foundation because they come with pre-configured build environment.
@@ -257,7 +261,7 @@ Each project's `build.sh` script is uniquely written, but after modification,
 all scripts should follow a consistent interface.
 They should rely only on four environmental variables:
 
-* `$TUNER_COMPILER_BIN` – Path to the **GCC 10.3.0** compiler bin directory.
+* `$TUNER_COMPILER_BIN` – Path to the **GCC** compiler bin directory.
 * `$TUNER_FLAGS` – Compiler flags to be applied for C and C++ projects.
 * `$TUNER_OUTPUT` – Output directory where the compiled binary should be placed.
 * `$TUNER_CORE_COUNT` - Number of cores that can be used by the script.
@@ -334,9 +338,10 @@ You can set it to the latest available version of the project with `--branch` ar
 RUN git clone --recursive --depth 1 --branch 1.25.5 git://git.ghostscript.com/mupdf.git mupdf
 ```
 
-Finally, OSS-Fuzz Dockerfiles rely on environment variables like `$SRC`,
-which we won't be using, so they should be removed.
-Instead, copy `build.sh`, `corpus.tar.gz`, and any other dependencies into the `/app` directory.
+Finally, OSS-Fuzz Dockerfiles rely on environment variable `$SRC`,
+which is a variable defined by OSS-Fuzz, and we won't be using it,
+so it should be replaced with `/app` directory.
+And instead, copy `build.sh`, `corpus.tar.gz`, and any other dependencies into the `/app` directory.
 
 Generally, aside from the steps mentioned above, any steps in the build process
 that only need to be run once before compiling the project should be included in the `Dockerfile`.
